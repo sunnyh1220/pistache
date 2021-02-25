@@ -1,0 +1,103 @@
+{
+	"variables": [],
+	"info": {
+		"name": "DeepArenaLustreAPI",
+		"_postman_id": "4825e474-1748-5715-704a-cf35b3a92825",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "配额",
+			"description": "",
+			"item": [
+				{
+					"name": "project设置配额",
+					"request": {
+						"url": "http://192.168.1.191:9080/lfs/setquota",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"project\":112, \"mount_point\": \"/mnt/lustre\", \"block_soft_limit\": 10240, \"block_hard_limit\": 10240,\"inode_soft_limit\": 10240,\"inode_hard_limit\": 10240}"
+						},
+						"description": "只支持设置project配额\n\n\n- project -->  -p\n- mount_point --> filesystem\n- block_soft_limit --> -b\n- block_hard_limit --> -B\n- inode_soft_limit --> -i\n- inode_hard_limit --> -I\n\nlimit 类型 uint64\n\n```bash\n# lfs setquota --help\nlfs setquota: unrecognized option '--help'\nSet filesystem quotas.\nusage: setquota <-u|-g|-p> <uname>|<uid>|<gname>|<gid>|<projid>\n                -b <block-softlimit> -B <block-hardlimit>\n                -i <inode-softlimit> -I <inode-hardlimit> <filesystem>\n       setquota <-u|--user|-g|--group|-p|--projid> <uname>|<uid>|<gname>|<gid>|<projid>\n                [--block-softlimit <block-softlimit>]\n                [--block-hardlimit <block-hardlimit>]\n                [--inode-softlimit <inode-softlimit>]\n                [--inode-hardlimit <inode-hardlimit>] <filesystem>\n       setquota [-t] <-u|--user|-g|--group|-p|--projid>\n                [--block-grace <block-grace>]\n                [--inode-grace <inode-grace>] <filesystem>\n       setquota <-U|-G|-P>\n                -b <block-softlimit> -B <block-hardlimit>\n                -i <inode-softlimit> -I <inode-hardlimit> <filesystem>\n       setquota <-U|--default-usr|-G|--default-grp|-P|--default-prj>\n                [--block-softlimit <block-softlimit>]\n                [--block-hardlimit <block-hardlimit>]\n                [--inode-softlimit <inode-softlimit>]\n                [--inode-hardlimit <inode-hardlimit>] <filesystem>\n       setquota <-u|-g|-p> <uname>|<uid>|<gname>|<gid>|<projid>\n                <-d|--default>\n       -b can be used instead of --block-softlimit/--block-grace\n       -B can be used instead of --block-hardlimit\n       -i can be used instead of --inode-softlimit/--inode-grace\n       -I can be used instead of --inode-hardlimit\n       -d can be used instead of --default\n\nNote: The total quota space will be split into many qunits and\n      balanced over all server targets, the minimal qunit size is\n      1M bytes for block space and 1K inodes for inode space.\n\n      The maximum quota grace time is 2^48 - 1 seconds.\n\n      Quota space rebalancing process will stop when this mininum\n      value is reached. As a result, quota exceeded can be returned\n      while many targets still have 1MB or 1K inodes of spare\n      quota space.\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "查看项目配额",
+					"request": {
+						"url": "http://192.168.1.191:9080/lfs/quota",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"project\":4294967294, \"mount_point\": \"/mnt/lustre\"}"
+						},
+						"description": "只支持查看project配额\n\n- project  -->  -p   --> project类型 uint\n- mount_point --> filesystem\n\n```bash\n# lfs quota --help\nlfs quota: unrecognized option 'quota'\nDisplay disk usage and limits.\nusage: quota [-q] [-v] [-h] [-o <obd_uuid>|-i <mdt_idx>|-I <ost_idx>]\n             [<-u|-g|-p> <uname>|<uid>|<gname>|<gid>|<projid>] <filesystem>\n       quota [-o <obd_uuid>|-i <mdt_idx>|-I <ost_idx>] -t <-u|-g|-p> <filesystem>\n         quota [-q] [-v] [h] <-U|-G|-P> <filesystem>\n```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "项目project",
+			"description": "",
+			"item": [
+				{
+					"name": "文件或文件夹设置project",
+					"request": {
+						"url": "http://192.168.1.191:9080/lfs/setproject",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"project\":12, \"file_or_dir\": \"/mnt/lustre/wangwu\", \"recursion\": true, \"assign\": true}"
+						},
+						"description": "- project --> -p\n- file_or_dir --> file|directory\n- recursion --> -r\n- assign --> -s\n\n```bash\n# lfs project --help\nlfs: invalid option '-'\nChange or list project attribute for specified file or directory.\nusage: project [-d|-r] <file|directory...>\n         list project ID and flags on file(s) or directories\n       project [-p id] [-s] [-r] <file|directory...>\n         set project ID and/or inherit flag for specified file(s) or directories\n       project -c [-d|-r [-p id] [-0]] <file|directory...>\n         check project ID and flags on file(s) or directories, print outliers\n       project -C [-r] [-k] <file|directory...>\n         clear the project inherit flag and ID on the file or directory\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "文件或文件夹清除project",
+					"request": {
+						"url": "http://192.168.1.191:9080/lfs/clearproject",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"file_or_dir\": \"/mnt/lustre/wangwu\", \"keep\": false, \"recursion\": true}"
+						},
+						"description": "- file_or_dir --> file|directory\n- recursion --> -r\n- keep --> -k\n\n```bash\n# lfs project --help\nlfs: invalid option '-'\nChange or list project attribute for specified file or directory.\nusage: project [-d|-r] <file|directory...>\n         list project ID and flags on file(s) or directories\n       project [-p id] [-s] [-r] <file|directory...>\n         set project ID and/or inherit flag for specified file(s) or directories\n       project -c [-d|-r [-p id] [-0]] <file|directory...>\n         check project ID and flags on file(s) or directories, print outliers\n       project -C [-r] [-k] <file|directory...>\n         clear the project inherit flag and ID on the file or directory\n```v"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,9 +1,16 @@
 function(pistache_example example_name)
     set(EXAMPLE_EXECUTABLE run_${example_name})
     set(EXAMPLE_SOURCE ${example_name}.cc)
+    
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    message("-----------debug mode---------")
+    set(CMAKE_CXX_FLAGS_DEBUG “${CMAKE_CXX_FLAGS_DEBUG} -O0”)
+    set(CMAKE_C_FLAGS_DEBUG “${CMAKE_CXX_FLAGS_DEBUG} -O0”)
+endif()
 
     add_executable(${EXAMPLE_EXECUTABLE} ${EXAMPLE_SOURCE})
     target_link_libraries(${EXAMPLE_EXECUTABLE} pistache_static)
+    target_link_libraries(${EXAMPLE_EXECUTABLE} lustreapi)
 endfunction()
 
 pistache_example(hello_server)
